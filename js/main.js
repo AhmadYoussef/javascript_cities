@@ -3,27 +3,21 @@
 // here you can type your code
 
 const inputElement = document.getElementById('searchfield');
-
 inputElement.addEventListener('input', search);
-
 
 function search(){
     let inputText = inputElement.value;
+    let regExp = new RegExp(inputText,'i');
     document.getElementById('output').innerHTML = '';
     if(inputText.length >1){
-        for(let i = 0; i < cities.length; i++){
-            let conditionCity = cities[i].city.toLowerCase().search(inputText.toLowerCase()); 
-            let conditionStat = cities[i].state.toLowerCase().search(inputText.toLowerCase());
-            if( (conditionCity != -1) || (conditionStat != -1)){
-                document.getElementById('output').innerHTML += `<li> ${highlight(cities[i].city,inputText)}, ${highlight(cities[i].state,inputText)} ${cities[i].population} </li>`
-            }
-        }
+        let newMatches = cities.filter(element => (element.city.match(regExp)|| element.state.match(regExp)))
+        newMatches.map(element => {
+            document.getElementById('output').innerHTML += `<li> ${highlight(element.city,regExp)}, ${highlight(element.state,regExp)} ${element.population} </li>`;
+        });
     }
-
 }
 
 function highlight(text , search) {
-    var re = new RegExp(search, 'i');
-    return text.replace(re, `<mark>${search}</mark>`);
+    return text.replace(search, `<mark>$&</mark>`);
   }
 
